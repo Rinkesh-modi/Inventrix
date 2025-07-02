@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link, useNavigate } from "@remix-run/react";
 import { ErrorMessage, Field, Form, Formik, FormikHelpers } from "formik";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -11,6 +11,7 @@ import { AxiosClient } from "~/utils/AxiosClient";
 const RegisterPage = () => {
   const [isHide, setIsHide] = useState(true);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const initalState: RegisterProps = {
     name: "",
@@ -44,10 +45,14 @@ const RegisterPage = () => {
       if (response.status === 201) {
         console.log("Registration successful:", data);
         toast.success("Form submitted successfully!");
+        navigate("/login");
         helpers.resetForm();
       }
     } catch (error: any) {
-      toast.error(error.response.data.error || "An error occurred while submitting the form.");
+      toast.error(
+        error.response.data.error ||
+          "An error occurred while submitting the form."
+      );
     } finally {
       setLoading(false);
     }

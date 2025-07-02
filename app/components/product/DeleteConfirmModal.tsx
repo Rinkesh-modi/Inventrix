@@ -1,5 +1,5 @@
 // app/components/product/DeleteConfirmModal.tsx
-import { Form } from "@remix-run/react";
+import { Form, useNavigate } from "@remix-run/react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Product } from "~/types/product";
@@ -9,7 +9,6 @@ interface DeleteConfirmModalProps {
   product: Product;
   isOpen: boolean;
   onClose: () => void;
-  
 }
 
 export default function DeleteConfirmModal({
@@ -17,8 +16,10 @@ export default function DeleteConfirmModal({
   isOpen,
   onClose,
 }: DeleteConfirmModalProps) {
-  if (!isOpen) return null;
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+  if (!isOpen) return null;
+
   const handleDelete = async () => {
     try {
       setLoading(true);
@@ -39,7 +40,7 @@ export default function DeleteConfirmModal({
       if (response.status === 200) {
         toast.success("Product deleted successfully");
         // Redirect to products list after successful deletion
-        window.location.href = "/products";
+        navigate("/products");
       } else {
         console.error("Error deleting product:", error);
       }

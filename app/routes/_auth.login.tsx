@@ -93,7 +93,7 @@ const LoginPage = () => {
                   name="email"
                   type="email"
                   id="email"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200 bg-white/70 backdrop-blur-sm hover:bg-white/90"
+                  className="w-full px-4 py-3 border text-black border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200 bg-white/70 backdrop-blur-sm hover:bg-white/90"
                   placeholder="Enter your email address"
                 />
                 <ErrorMessage

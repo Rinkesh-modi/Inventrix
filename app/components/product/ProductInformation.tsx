@@ -1,5 +1,5 @@
 // app/components/product/ProductInformation.tsx
-import { Link } from "@remix-run/react";
+import { Link, useNavigate } from "@remix-run/react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as yup from "yup";
 import { FaSave } from "react-icons/fa";
@@ -79,6 +79,8 @@ export default function ProductInformation({
   };
 
   const [loading, setLoading] = useState<boolean>(false);
+
+  const navigate = useNavigate();
   const handleSubmit = async (values: any) => {
     try {
       setLoading(true);
@@ -100,7 +102,7 @@ export default function ProductInformation({
 
       if (response.status === 200) {
         toast.success("Product updated successfully");
-        window.location.href = `/products/${product._id}`;
+        navigate(`/products/${product._id}`);
       } else {
         console.error("Error updating product:", error);
       }
