@@ -1,116 +1,121 @@
 import { Link } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import {
   FaBox,
   FaChartLine,
-  FaCog,
   FaExclamationTriangle,
   FaPlus,
-  FaUsers,
+  FaDollarSign,
+  FaEye,
 } from "react-icons/fa";
 import Header from "~/components/Header";
+import { useMainContext } from "~/context/MainContext";
+import { useAuthGuard } from "~/hooks/useAuthGuard";
+import { Product } from "~/types/product";
+import { AxiosClient } from "~/utils/AxiosClient";
 
 const Dashboard = () => {
-  // Mock data - replace with real data from your loader
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const { user } = useMainContext();
+
+    useAuthGuard();
+
+  // Fetch products data
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token") || "";
+      if (!token) return;
+
+      const response = await AxiosClient.get("/api/products", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setProducts(
+        Array.isArray(response.data.products) ? response.data.products : []
+      );
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // ✅ Calculate stats from products API data
   const stats = {
-    totalProducts: 1247,
-    lowStockItems: 23,
-    totalValue: 125800,
-    todayTransactions: 45,
+    totalProducts: products.length,
+    lowStockItems: products.filter((p) => p.quantity <= p.minStock).length,
+    totalValue: products.reduce((sum, p) => sum + p.price * p.quantity, 0),
+    activeProducts: products.filter((p) => p.status === "active").length,
   };
 
-  const recentTransactions = [
-    {
-      id: 1,
-      product: "Wireless Headphones",
-      type: "OUT",
-      quantity: 5,
-      user: "John Doe",
-      date: "2025-01-02",
-      time: "10:30 AM",
-    },
-    {
-      id: 2,
-      product: "Gaming Mouse",
-      type: "IN",
-      quantity: 25,
-      user: "Jane Smith",
-      date: "2025-01-02",
-      time: "09:15 AM",
-    },
-    {
-      id: 3,
-      product: "USB Cable",
-      type: "OUT",
-      quantity: 12,
-      user: "Mike Johnson",
-      date: "2025-01-02",
-      time: "08:45 AM",
-    },
-    {
-      id: 4,
-      product: "Bluetooth Speaker",
-      type: "IN",
-      quantity: 8,
-      user: "Sarah Wilson",
-      date: "2025-01-01",
-      time: "04:20 PM",
-    },
-    {
-      id: 5,
-      product: "Phone Case",
-      type: "OUT",
-      quantity: 3,
-      user: "Tom Brown",
-      date: "2025-01-01",
-      time: "02:10 PM",
-    },
-  ];
+  // ✅ Get low stock products (quantity <= minStock)
+  const lowStockProducts = products
+    .filter((p) => p.quantity <= p.minStock)
+    .sort((a, b) => a.quantity - b.quantity)
+    .slice(0, 6);
 
-  const lowStockProducts = [
-    {
-      id: 1,
-      name: "Wireless Earbuds",
-      currentStock: 5,
-      minStock: 20,
-      sku: "WE-001",
-    },
-    {
-      id: 2,
-      name: "Screen Protector",
-      currentStock: 2,
-      minStock: 15,
-      sku: "SP-002",
-    },
-    { id: 3, name: "Power Bank", currentStock: 8, minStock: 25, sku: "PB-003" },
-  ];
+  // ✅ Get recently added products (using createdAt)
+  const recentProducts = products
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    .slice(0, 5);
 
-  const handleLogout = () => {
-    // Implement your logout logic here
-    console.log("Logging out from dashboard...");
-    // For example: redirect to login page, clear tokens, etc.
+  // ✅ Get category distribution (using category field)
+  const categoryStats = products.reduce((acc, product) => {
+    acc[product.category] = (acc[product.category] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const topCategories = Object.entries(categoryStats)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 5);
+
+  // ✅ Stock status distribution (using quantity and minStock)
+  const stockStatusDistribution = {
+    inStock: products.filter((p) => p.quantity > p.minStock).length,
+    lowStock: products.filter((p) => p.quantity <= p.minStock && p.quantity > 0)
+      .length,
+    outOfStock: products.filter((p) => p.quantity === 0).length,
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header currentPage="dashboard" />
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading dashboard...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <Header
-        currentPage="dashboard"
-        userName="John Doe"
-        userRole="staff"
-        onLogout={handleLogout}
-      />
+      <Header currentPage="dashboard" />
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
           <p className="mt-2 text-gray-600">
-            Welcome back! Heres whats happening with your inventory today.
+            Welcome back{user?.name ? `, ${user.name}` : ""}! Here's your
+            inventory overview.
           </p>
         </div>
 
-        {/* Stats Cards */}
+        {/* ✅ Stats Cards - All calculated from products API */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
@@ -147,7 +152,7 @@ const Dashboard = () => {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="p-3 rounded-lg bg-green-100">
-                <FaChartLine className="h-6 w-6 text-green-600" />
+                <FaDollarSign className="h-6 w-6 text-green-600" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Value</p>
@@ -161,14 +166,14 @@ const Dashboard = () => {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="p-3 rounded-lg bg-purple-100">
-                <FaUsers className="h-6 w-6 text-purple-600" />
+                <FaChartLine className="h-6 w-6 text-purple-600" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">
-                  Todays Transactions
+                  Active Products
                 </p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {stats.todayTransactions}
+                  {stats.activeProducts}
                 </p>
               </div>
             </div>
@@ -189,106 +194,130 @@ const Dashboard = () => {
               Add Product
             </Link>
             <Link
-              to="/inventory/adjust"
+              to="/products"
               className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200"
             >
-              <FaCog className="mr-2 h-4 w-4" />
-              Stock Adjustment
-            </Link>
-            <Link
-              to="/reports"
-              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200"
-            >
-              <FaChartLine className="mr-2 h-4 w-4" />
-              View Reports
+              <FaBox className="mr-2 h-4 w-4" />
+              View All Products
             </Link>
           </div>
         </div>
 
         {/* Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Recent Transactions */}
+          {/* ✅ Recently Added Products (using createdAt) */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200">
               <div className="px-6 py-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  Recent Transactions
+                  Recently Added Products
                 </h3>
               </div>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Product
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Type
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Quantity
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        User
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Date
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {recentTransactions.map((transaction) => (
-                      <tr
-                        key={transaction.id}
-                        className="hover:bg-gray-50 transition-colors duration-200"
+              <div className="p-6">
+                {recentProducts.length > 0 ? (
+                  <div className="space-y-4">
+                    {recentProducts.map((product) => (
+                      <div
+                        key={product._id}
+                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
                       >
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {transaction.product}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              transaction.type === "IN"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
-                            }`}
-                          >
-                            {transaction.type === "IN"
-                              ? "Stock In"
-                              : "Stock Out"}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {transaction.quantity}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {transaction.user}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <div>
-                            <div>{transaction.date}</div>
-                            <div className="text-xs text-gray-400">
-                              {transaction.time}
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {product.name}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            SKU: {product.sku} • {product.category}
+                          </p>
+                        </div>
+                        <div className="text-right ml-4">
+                          <p className="text-sm font-bold text-gray-900">
+                            ${product.price}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(product.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <Link
+                          to={`/products/${product._id}`}
+                          className="ml-3 text-blue-600 hover:text-blue-800"
+                          title="View Product"
+                        >
+                          <FaEye className="h-4 w-4" />
+                        </Link>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center py-8">
+                    No products found
+                  </p>
+                )}
               </div>
-              <div className="px-6 py-4 border-t border-gray-200">
-                <Link
-                  to="/transactions"
-                  className="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors duration-200"
-                >
-                  View all transactions →
-                </Link>
+            </div>
+
+            {/* ✅ Analytics Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              {/* ✅ Stock Status Distribution */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Stock Status
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-600">
+                      In Stock
+                    </span>
+                    <span className="text-sm font-bold text-green-600">
+                      {stockStatusDistribution.inStock}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-600">
+                      Low Stock
+                    </span>
+                    <span className="text-sm font-bold text-yellow-600">
+                      {stockStatusDistribution.lowStock}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-600">
+                      Out of Stock
+                    </span>
+                    <span className="text-sm font-bold text-red-600">
+                      {stockStatusDistribution.outOfStock}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* ✅ Top Categories */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Top Categories
+                </h3>
+                <div className="space-y-3">
+                  {topCategories.slice(0, 4).map(([category, count]) => (
+                    <div
+                      key={category}
+                      className="flex justify-between items-center"
+                    >
+                      <span className="text-sm font-medium text-gray-600 truncate">
+                        {category}
+                      </span>
+                      <span className="text-sm font-bold text-gray-900">
+                        {count}
+                      </span>
+                    </div>
+                  ))}
+                  {topCategories.length === 0 && (
+                    <p className="text-sm text-gray-500">No categories found</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Low Stock Alert */}
+          {/* ✅ Low Stock Alert (using quantity and minStock) */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200">
               <div className="px-6 py-4 border-b border-gray-200">
@@ -298,39 +327,53 @@ const Dashboard = () => {
                 </h3>
               </div>
               <div className="p-6">
-                <div className="space-y-4">
-                  {lowStockProducts.map((product) => (
-                    <div
-                      key={product.id}
-                      className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200"
-                    >
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {product.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          SKU: {product.sku}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-bold text-red-600">
-                          {product.currentStock}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          Min: {product.minStock}
-                        </p>
-                      </div>
+                {lowStockProducts.length > 0 ? (
+                  <>
+                    <div className="space-y-3">
+                      {lowStockProducts.map((product) => (
+                        <div
+                          key={product._id}
+                          className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200"
+                        >
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 truncate">
+                              {product.name}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              SKU: {product.sku}
+                            </p>
+                          </div>
+                          <div className="text-right ml-3">
+                            <p className="text-sm font-bold text-red-600">
+                              {product.quantity}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              Min: {product.minStock}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                <div className="mt-4">
-                  <Link
-                    to="/products?filter=low-stock"
-                    className="block w-full text-center px-4 py-2 border border-red-300 text-sm font-medium rounded-lg text-red-700 bg-red-50 hover:bg-red-100 transition-colors duration-200"
-                  >
-                    View All Low Stock Items
-                  </Link>
-                </div>
+                    <div className="mt-4">
+                      <Link
+                        to="/products"
+                        className="block w-full text-center px-4 py-2 border border-red-300 text-sm font-medium rounded-lg text-red-700 bg-red-50 hover:bg-red-100 transition-colors duration-200"
+                      >
+                        View All Products
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center py-8">
+                    <FaChartLine className="mx-auto h-12 w-12 text-green-400 mb-4" />
+                    <p className="text-sm font-medium text-gray-900">
+                      All Good!
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      No low stock items found
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

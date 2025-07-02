@@ -8,3 +8,8 @@ export const generateToken = (_id: string) => {
 
   return token;
 };
+
+export const verifyToken = (token: string) => {
+  const payload:any = jwt.verify(token, jwt_secret);
+  return payload.userId;
+};

@@ -3,16 +3,6 @@ import { User } from "~/models/User";
 import { ConnectDB } from "~/utils/database";
 import bcrypt from "bcryptjs";
 
-export const loader = async () => {
-  ConnectDB();
-  return new Response(
-    JSON.stringify({ message: "Database Connected successfully" }),
-    {
-      status: 200,
-    }
-  );
-};
-
 export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     await ConnectDB();

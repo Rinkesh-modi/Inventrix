@@ -9,6 +9,7 @@ import {
   FaBars,
   FaTimes,
 } from "react-icons/fa";
+import { useMainContext } from "~/context/MainContext";
 
 interface HeaderProps {
   currentPage?:
@@ -17,36 +18,23 @@ interface HeaderProps {
     | "inventory"
     | "transactions"
     | "reports";
-  userName?: string;
-  userRole?: "admin" | "staff";
-  onLogout?: () => void;
 }
 
-const Header = ({
-  currentPage = "dashboard",
-  userName = "John Doe",
-  userRole = "staff",
-  onLogout,
-}: HeaderProps) => {
+const Header = ({ currentPage = "dashboard" }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const { user, logoutHandler } = useMainContext();
 
   const handleLogout = () => {
-    if (onLogout) {
-      onLogout();
-    } else {
-      // Default logout behavior
-      console.log("Logging out...");
-      // You can implement your logout logic here
-    }
+    logoutHandler();
   };
 
   const navigationItems = [
     { key: "dashboard", label: "Dashboard", href: "/dashboard" },
     { key: "products", label: "Products", href: "/products" },
-    { key: "inventory", label: "Inventory", href: "/inventory" },
-    { key: "transactions", label: "Transactions", href: "/transactions" },
-    { key: "reports", label: "Reports", href: "/reports" },
+    // { key: "inventory", label: "Inventory", href: "/inventory" },
+    // { key: "transactions", label: "Transactions", href: "/transactions" },
+    // { key: "reports", label: "Reports", href: "/reports" },
   ];
 
   const isActivePage = (pageKey: string) => currentPage === pageKey;
@@ -85,7 +73,7 @@ const Header = ({
           {/* Right side - Search, Notifications, User Menu */}
           <div className="flex items-center space-x-4">
             {/* Search */}
-            <div className="hidden md:block relative">
+            {/* <div className="hidden md:block relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaSearch className="h-4 w-4 text-gray-400" />
               </div>
@@ -94,7 +82,7 @@ const Header = ({
                 placeholder="Search products..."
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
-            </div>
+            </div> */}
 
             {/* Notifications */}
             <button className="relative p-2 text-gray-400 hover:text-gray-500 transition-colors duration-200">
@@ -113,10 +101,10 @@ const Header = ({
                 </div>
                 <div className="hidden md:block text-left">
                   <div className="text-sm font-medium text-gray-700">
-                    {userName}
+                    {user?.name ?? ""}
                   </div>
                   <div className="text-xs text-gray-500 capitalize">
-                    {userRole}
+                    {user?.role ?? ""}
                   </div>
                 </div>
               </button>
@@ -139,11 +127,11 @@ const Header = ({
                   ></div>
 
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50 border border-gray-200">
-                    <div className="px-4 py-2 text-xs text-gray-500 border-b border-gray-100">
+                    {/* <div className="px-4 py-2 text-xs text-gray-500 border-b border-gray-100">
                       Signed in as{" "}
-                      <span className="font-medium">{userName}</span>
-                    </div>
-                    <Link
+                      <span className="font-medium"> {user?.name ?? ""}</span>
+                    </div> */}
+                    {/* <Link
                       to="/profile"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
                       onClick={() => setIsUserMenuOpen(false)}
@@ -158,7 +146,7 @@ const Header = ({
                     >
                       <FaCog className="mr-3 h-4 w-4" />
                       Settings
-                    </Link>
+                    </Link> */}
                     <div className="border-t border-gray-100"></div>
                     <button
                       onClick={handleLogout}
@@ -226,10 +214,10 @@ const Header = ({
                 </div>
                 <div className="ml-3">
                   <div className="text-base font-medium text-gray-800">
-                    {userName}
+                    {user?.name ?? ""}
                   </div>
                   <div className="text-sm text-gray-500 capitalize">
-                    {userRole}
+                    {user?.role ?? ""}
                   </div>
                 </div>
               </div>
