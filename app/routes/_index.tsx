@@ -1,138 +1,484 @@
 import type { MetaFunction } from "@remix-run/node";
+import { Link } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "Inventrix - Smart Inventory Management System" },
+    {
+      name: "description",
+      content:
+        "Streamline your inventory management with Inventrix. Track stock, manage products, and optimize your business operations with our powerful, user-friendly platform.",
+    },
+    { name: "viewport", content: "width=device-width, initial-scale=1" },
   ];
 };
 
 export default function Index() {
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="flex flex-col items-center gap-16">
-        <header className="flex flex-col items-center gap-9">
-          <h1 className="leading text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Welcome to <span className="sr-only">Remix</span>
-          </h1>
-          <div className="h-[144px] w-[434px]">
-            <img
-              src="/logo-light.png"
-              alt="Remix"
-              className="block w-full dark:hidden"
-            />
-            <img
-              src="/logo-dark.png"
-              alt="Remix"
-              className="hidden w-full dark:block"
-            />
-          </div>
-        </header>
-        <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
-          <p className="leading-6 text-gray-700 dark:text-gray-200">
-            What&apos;s next?
-          </p>
-          <ul>
-            {resources.map(({ href, text, icon }) => (
-              <li key={href}>
-                <a
-                  className="group flex items-center gap-3 self-stretch p-3 leading-normal text-blue-700 hover:underline dark:text-blue-500"
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <header className="fixed top-0 w-full bg-white/95 backdrop-blur-md border-b border-gray-200 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Link
+                to="/"
+                className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+              >
+                Inventrix
+              </Link>
+            </div>
+
+            {/* Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <a
+                href="#features"
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Features
+              </a>
+              <a
+                href="#benefits"
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Benefits
+              </a>
+              <a
+                href="#pricing"
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Pricing
+              </a>
+              <Link
+                to="/login"
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+              >
+                Register
+              </Link>
+            </nav>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button className="text-gray-700 hover:text-blue-600">
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  {icon}
-                  {text}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="pt-20 pb-16 bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-4xl mx-auto">
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              Smart Inventory
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent block">
+                Management
+              </span>
+            </h1>
+            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+              Streamline your inventory operations with Inventrix. Track stock
+              levels, manage products, and optimize your business processes with
+              our intuitive platform.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/register"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+              >
+                Get Started Free
+              </Link>
+              <Link
+                to="/demo"
+                className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-full text-lg font-semibold hover:border-blue-600 hover:text-blue-600 transition-all duration-300"
+              >
+                View Demo
+              </Link>
+            </div>
+          </div>
+
+          {/* Hero Image/Mockup */}
+          <div className="mt-16 relative">
+            <div className="bg-white rounded-2xl shadow-2xl p-8 mx-auto max-w-4xl border">
+              <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl h-64 md:h-80 flex items-center justify-center text-white">
+                <div className="text-center">
+                  <div className="text-6xl mb-4">📊</div>
+                  <h3 className="text-2xl font-bold">Dashboard Preview</h3>
+                  <p className="text-blue-100 mt-2">
+                    Real-time inventory insights
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Everything You Need to Manage Inventory
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Powerful features designed to simplify your inventory management
+              and boost productivity.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Feature 1 */}
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white text-2xl mb-6">
+                📦
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                Product Management
+              </h3>
+              <p className="text-gray-600">
+                Easily add, edit, and organize your products with detailed
+                information, SKUs, and categories.
+              </p>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-2xl mb-6">
+                📊
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                Real-time Tracking
+              </h3>
+              <p className="text-gray-600">
+                Monitor stock levels in real-time with automatic alerts for low
+                inventory and reorder points.
+              </p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center text-white text-2xl mb-6">
+                🔐
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                Role-based Access
+              </h3>
+              <p className="text-gray-600">
+                Secure user management with customizable roles and permissions
+                for your team.
+              </p>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-white text-2xl mb-6">
+                📈
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                Analytics & Reports
+              </h3>
+              <p className="text-gray-600">
+                Generate detailed reports and gain insights into your inventory
+                trends and performance.
+              </p>
+            </div>
+
+            {/* Feature 5 */}
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 rounded-xl flex items-center justify-center text-white text-2xl mb-6">
+                🔄
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                Transaction History
+              </h3>
+              <p className="text-gray-600">
+                Complete audit trail of all inventory movements with detailed
+                transaction logs.
+              </p>
+            </div>
+
+            {/* Feature 6 */}
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center text-white text-2xl mb-6">
+                ⚡
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                Fast & Responsive
+              </h3>
+              <p className="text-gray-600">
+                Lightning-fast performance with a responsive design that works
+                on any device.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <section id="benefits" className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                Why Choose Inventrix?
+              </h2>
+              <p className="text-xl text-gray-600 mb-8">
+                Built for modern businesses that need reliable, scalable
+                inventory management solutions.
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex items-start">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-4 mt-1">
+                    ✓
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Easy to Use</h4>
+                    <p className="text-gray-600">
+                      Intuitive interface that requires minimal training
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-4 mt-1">
+                    ✓
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">
+                      Secure & Reliable
+                    </h4>
+                    <p className="text-gray-600">
+                      Enterprise-grade security with data backup
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-4 mt-1">
+                    ✓
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">
+                      Cost Effective
+                    </h4>
+                    <p className="text-gray-600">
+                      Reduce operational costs and improve efficiency
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-4 mt-1">
+                    ✓
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">
+                      24/7 Support
+                    </h4>
+                    <p className="text-gray-600">
+                      Round-the-clock customer support when you need it
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8">
+                <Link
+                  to="/register"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                >
+                  Start Your Free Trial
+                </Link>
+              </div>
+            </div>
+
+            <div className="lg:pl-8">
+              <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-8 text-white">
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold">99.9%</div>
+                    <div className="text-blue-100">Uptime</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold">50K+</div>
+                    <div className="text-blue-100">Products Managed</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold">1M+</div>
+                    <div className="text-blue-100">Transactions</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold">24/7</div>
+                    <div className="text-blue-100">Support</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl font-bold text-white mb-6">
+            Ready to Transform Your Inventory Management?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8">
+            Join thousands of businesses already using Inventrix to streamline
+            their operations.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              to="/register"
+              className="bg-white text-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+            >
+              Get Started Today
+            </Link>
+            <Link
+              to="/contact"
+              className="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300"
+            >
+              Contact Sales
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <Link
+                to="/"
+                className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+              >
+                Inventrix
+              </Link>
+              <p className="text-gray-400 mt-4">
+                Smart inventory management for modern businesses.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4">Product</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>
+                  <a
+                    href="#features"
+                    className="hover:text-white transition-colors"
+                  >
+                    Features
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#pricing"
+                    className="hover:text-white transition-colors"
+                  >
+                    Pricing
+                  </a>
+                </li>
+                <li>
+                  <Link
+                    to="/demo"
+                    className="hover:text-white transition-colors"
+                  >
+                    Demo
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4">Company</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>
+                  <Link
+                    to="/about"
+                    className="hover:text-white transition-colors"
+                  >
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/contact"
+                    className="hover:text-white transition-colors"
+                  >
+                    Contact
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/support"
+                    className="hover:text-white transition-colors"
+                  >
+                    Support
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4">Get Started</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>
+                  <Link
+                    to="/register"
+                    className="hover:text-white transition-colors"
+                  >
+                    Sign Up
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/login"
+                    className="hover:text-white transition-colors"
+                  >
+                    Login
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/docs"
+                    className="hover:text-white transition-colors"
+                  >
+                    Documentation
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+            <p>&copy; 2025 Inventrix. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
-
-const resources = [
-  {
-    href: "https://remix.run/start/quickstart",
-    text: "Quick Start (5 min)",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="none"
-        className="stroke-gray-600 group-hover:stroke-current dark:stroke-gray-300"
-      >
-        <path
-          d="M8.51851 12.0741L7.92592 18L15.6296 9.7037L11.4815 7.33333L12.0741 2L4.37036 10.2963L8.51851 12.0741Z"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "https://remix.run/start/tutorial",
-    text: "Tutorial (30 min)",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="none"
-        className="stroke-gray-600 group-hover:stroke-current dark:stroke-gray-300"
-      >
-        <path
-          d="M4.561 12.749L3.15503 14.1549M3.00811 8.99944H1.01978M3.15503 3.84489L4.561 5.2508M8.3107 1.70923L8.3107 3.69749M13.4655 3.84489L12.0595 5.2508M18.1868 17.0974L16.635 18.6491C16.4636 18.8205 16.1858 18.8205 16.0144 18.6491L13.568 16.2028C13.383 16.0178 13.0784 16.0347 12.915 16.239L11.2697 18.2956C11.047 18.5739 10.6029 18.4847 10.505 18.142L7.85215 8.85711C7.75756 8.52603 8.06365 8.21994 8.39472 8.31453L17.6796 10.9673C18.0223 11.0653 18.1115 11.5094 17.8332 11.7321L15.7766 13.3773C15.5723 13.5408 15.5554 13.8454 15.7404 14.0304L18.1868 16.4767C18.3582 16.6481 18.3582 16.926 18.1868 17.0974Z"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "https://remix.run/docs",
-    text: "Remix Docs",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="none"
-        className="stroke-gray-600 group-hover:stroke-current dark:stroke-gray-300"
-      >
-        <path
-          d="M9.99981 10.0751V9.99992M17.4688 17.4688C15.889 19.0485 11.2645 16.9853 7.13958 12.8604C3.01467 8.73546 0.951405 4.11091 2.53116 2.53116C4.11091 0.951405 8.73546 3.01467 12.8604 7.13958C16.9853 11.2645 19.0485 15.889 17.4688 17.4688ZM2.53132 17.4688C0.951566 15.8891 3.01483 11.2645 7.13974 7.13963C11.2647 3.01471 15.8892 0.951453 17.469 2.53121C19.0487 4.11096 16.9854 8.73551 12.8605 12.8604C8.73562 16.9853 4.11107 19.0486 2.53132 17.4688Z"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "https://rmx.as/discord",
-    text: "Join Discord",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="20"
-        viewBox="0 0 24 20"
-        fill="none"
-        className="stroke-gray-600 group-hover:stroke-current dark:stroke-gray-300"
-      >
-        <path
-          d="M15.0686 1.25995L14.5477 1.17423L14.2913 1.63578C14.1754 1.84439 14.0545 2.08275 13.9422 2.31963C12.6461 2.16488 11.3406 2.16505 10.0445 2.32014C9.92822 2.08178 9.80478 1.84975 9.67412 1.62413L9.41449 1.17584L8.90333 1.25995C7.33547 1.51794 5.80717 1.99419 4.37748 2.66939L4.19 2.75793L4.07461 2.93019C1.23864 7.16437 0.46302 11.3053 0.838165 15.3924L0.868838 15.7266L1.13844 15.9264C2.81818 17.1714 4.68053 18.1233 6.68582 18.719L7.18892 18.8684L7.50166 18.4469C7.96179 17.8268 8.36504 17.1824 8.709 16.4944L8.71099 16.4904C10.8645 17.0471 13.128 17.0485 15.2821 16.4947C15.6261 17.1826 16.0293 17.8269 16.4892 18.4469L16.805 18.8725L17.3116 18.717C19.3056 18.105 21.1876 17.1751 22.8559 15.9238L23.1224 15.724L23.1528 15.3923C23.5873 10.6524 22.3579 6.53306 19.8947 2.90714L19.7759 2.73227L19.5833 2.64518C18.1437 1.99439 16.6386 1.51826 15.0686 1.25995ZM16.6074 10.7755L16.6074 10.7756C16.5934 11.6409 16.0212 12.1444 15.4783 12.1444C14.9297 12.1444 14.3493 11.6173 14.3493 10.7877C14.3493 9.94885 14.9378 9.41192 15.4783 9.41192C16.0471 9.41192 16.6209 9.93851 16.6074 10.7755ZM8.49373 12.1444C7.94513 12.1444 7.36471 11.6173 7.36471 10.7877C7.36471 9.94885 7.95323 9.41192 8.49373 9.41192C9.06038 9.41192 9.63892 9.93712 9.6417 10.7815C9.62517 11.6239 9.05462 12.1444 8.49373 12.1444Z"
-          strokeWidth="1.5"
-        />
-      </svg>
-    ),
-  },
-];
