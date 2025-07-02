@@ -63,7 +63,7 @@ export default function ProductInformation({
   product,
   isEditing,
 }: ProductInformationProps) {
-  // ✅ ADDED: Submit handler for updating product
+  //  ADDED: Submit handler for updating product
 
   const intialValue = {
     _id: product._id,

@@ -9,12 +9,14 @@ interface DeleteConfirmModalProps {
   product: Product;
   isOpen: boolean;
   onClose: () => void;
+  onDeleteSuccess?: () => void;
 }
 
 export default function DeleteConfirmModal({
   product,
   isOpen,
   onClose,
+  onDeleteSuccess,
 }: DeleteConfirmModalProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -39,8 +41,12 @@ export default function DeleteConfirmModal({
 
       if (response.status === 200) {
         toast.success("Product deleted successfully");
-        // Redirect to products list after successful deletion
-        navigate("/products");
+        if (onDeleteSuccess) {
+          onDeleteSuccess();
+          navigate("/products");
+        } else {
+          navigate("/products");
+        }
       } else {
         console.error("Error deleting product:", error);
       }

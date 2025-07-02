@@ -15,12 +15,11 @@ import { Product } from "~/types/product";
 import { AxiosClient } from "~/utils/AxiosClient";
 
 const Dashboard = () => {
-
   const [loading, setLoading] = useState<boolean>(false);
   const [products, setProducts] = useState<Product[]>([]);
   const { user } = useMainContext();
 
-    // useAuthGuard();
+  // useAuthGuard();
 
   // Fetch products data
   const fetchProducts = async () => {
@@ -47,7 +46,7 @@ const Dashboard = () => {
     fetchProducts();
   }, []);
 
-  // ✅ Calculate stats from products API data
+  //  Calculate stats from products API data
   const stats = {
     totalProducts: products.length,
     lowStockItems: products.filter((p) => p.quantity <= p.minStock).length,
@@ -55,13 +54,13 @@ const Dashboard = () => {
     activeProducts: products.filter((p) => p.status === "active").length,
   };
 
-  // ✅ Get low stock products (quantity <= minStock)
+  //  Get low stock products (quantity <= minStock)
   const lowStockProducts = products
     .filter((p) => p.quantity <= p.minStock)
     .sort((a, b) => a.quantity - b.quantity)
     .slice(0, 6);
 
-  // ✅ Get recently added products (using createdAt)
+  //  Get recently added products (using createdAt)
   const recentProducts = products
     .sort(
       (a, b) =>
@@ -69,7 +68,7 @@ const Dashboard = () => {
     )
     .slice(0, 5);
 
-  // ✅ Get category distribution (using category field)
+  //  Get category distribution (using category field)
   const categoryStats = products.reduce((acc, product) => {
     acc[product.category] = (acc[product.category] || 0) + 1;
     return acc;
@@ -79,7 +78,7 @@ const Dashboard = () => {
     .sort(([, a], [, b]) => b - a)
     .slice(0, 5);
 
-  // ✅ Stock status distribution (using quantity and minStock)
+  //  Stock status distribution (using quantity and minStock)
   const stockStatusDistribution = {
     inStock: products.filter((p) => p.quantity > p.minStock).length,
     lowStock: products.filter((p) => p.quantity <= p.minStock && p.quantity > 0)
@@ -115,7 +114,7 @@ const Dashboard = () => {
           </p>
         </div>
 
-        {/* ✅ Stats Cards - All calculated from products API */}
+        {/*   Stats Cards - All calculated from products API */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
@@ -205,7 +204,7 @@ const Dashboard = () => {
 
         {/* Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* ✅ Recently Added Products (using createdAt) */}
+          {/*   Recently Added Products (using createdAt) */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200">
               <div className="px-6 py-4 border-b border-gray-200">
@@ -255,9 +254,9 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* ✅ Analytics Section */}
+            {/*   Analytics Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-              {/* ✅ Stock Status Distribution */}
+              {/*   Stock Status Distribution */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Stock Status
@@ -290,7 +289,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* ✅ Top Categories */}
+              {/*   Top Categories */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Top Categories
@@ -317,7 +316,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* ✅ Low Stock Alert (using quantity and minStock) */}
+          {/*   Low Stock Alert (using quantity and minStock) */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200">
               <div className="px-6 py-4 border-b border-gray-200">

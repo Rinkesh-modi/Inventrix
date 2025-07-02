@@ -36,7 +36,7 @@ export default function ProductDetails() {
         },
       });
 
-      setProduct(response.data.product); // ✅ Set actual product
+      setProduct(response.data.product); //  Set actual product
     } catch (error) {
       console.error("Error fetching product:", error);
     } finally {

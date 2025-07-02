@@ -34,7 +34,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     const token = generateToken(user._id.toString());
 
-    // Here you would typically set a session or token for the user
     return new Response(
       JSON.stringify({ message: "Login successful", token: token }),
       {

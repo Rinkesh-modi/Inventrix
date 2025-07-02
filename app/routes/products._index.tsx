@@ -22,7 +22,7 @@ export default function ProductsIndex() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
-  // ✅ Search and Filter States
+  //  Search and Filter States
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
@@ -77,13 +77,13 @@ export default function ProductsIndex() {
     return { status: "In Stock", color: "bg-green-100 text-green-800" };
   };
 
-  // ✅ Get unique categories for filter dropdown
+  //  Get unique categories for filter dropdown
   const categories = useMemo(() => {
     if (!products) return [];
     return [...new Set(products.map((product) => product.category))].sort();
   }, [products]);
 
-  // ✅ Filter and search logic
+  //  Filter and search logic
   const filteredProducts = useMemo(() => {
     if (!products) return [];
 
@@ -130,7 +130,7 @@ export default function ProductsIndex() {
     });
   }, [products, searchTerm, statusFilter, categoryFilter, priceFilter]);
 
-  // ✅ Clear all filters
+  //  Clear all filters
   const clearFilters = () => {
     setSearchTerm("");
     setStatusFilter("all");
@@ -138,7 +138,7 @@ export default function ProductsIndex() {
     setPriceFilter("all");
   };
 
-  // ✅ Check if any filters are active
+  //  Check if any filters are active
   const hasActiveFilters =
     searchTerm !== "" ||
     statusFilter !== "all" ||
@@ -173,7 +173,7 @@ export default function ProductsIndex() {
           )}
         </div>
 
-        {/* ✅ Search and Filters Section */}
+        {/*   Search and Filters Section */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
           <div className="p-6">
             {/* Search Bar */}
@@ -432,7 +432,7 @@ export default function ProductsIndex() {
             </table>
           </div>
 
-          {/* ✅ Updated Empty State */}
+          {/*   Updated Empty State */}
           {filteredProducts.length === 0 && (
             <div className="text-center py-12">
               <div className="text-gray-500 mb-4">
@@ -486,240 +486,10 @@ export default function ProductsIndex() {
               setShowDeleteConfirm(false);
               setProductToDelete(null);
             }}
+            onDeleteSuccess={handleDeleteSuccess}
           />
         )}
       </main>
     </div>
   );
 }
-// import { Link, useNavigate } from "@remix-run/react";
-// import { useEffect, useState } from "react";
-// import { FaPlus, FaEdit, FaEye, FaTrash, FaSearch } from "react-icons/fa";
-// import Header from "~/components/Header";
-// import DeleteConfirmModal from "~/components/product/DeleteConfirmModal";
-// import { useMainContext } from "~/context/MainContext";
-// import { Product } from "~/types/product";
-// import { AxiosClient } from "~/utils/AxiosClient";
-
-// export default function ProductsIndex() {
-//   const [loading, setLoading] = useState<boolean>(false);
-//   const [products, setProducts] = useState<Product[] | null>(null);
-//   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-//   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
-
-//   const navigate = useNavigate();
-//   const fetchAllProducts = async () => {
-//     try {
-//       setLoading(true);
-//       const token = localStorage.getItem("token") || "";
-//       if (!token) {
-//         return;
-//       }
-//       const response = await AxiosClient.get("/api/products", {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       });
-//       const data = response.data;
-//       setProducts(Array.isArray(data.products) ? data.products : []);
-//     } catch (error) {
-//       navigate("/login");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-//   useEffect(() => {
-//     fetchAllProducts();
-//   }, []);
-
-//   const handleDeleteClick = (product: Product) => {
-//     setProductToDelete(product);
-//     setShowDeleteConfirm(true);
-//   };
-
-//   // ✅ Handle successful deletion
-//   const handleDeleteSuccess = () => {
-//     setShowDeleteConfirm(false);
-//     setProductToDelete(null);
-//     // Refresh the products list
-//     fetchAllProducts();
-//   };
-
-//   const getStockStatus = (product: Product) => {
-//     if (product.quantity === 0)
-//       return { status: "Out of Stock", color: "bg-red-100 text-red-800" };
-//     if (product.quantity <= product.minStock)
-//       return { status: "Low Stock", color: "bg-yellow-100 text-yellow-800" };
-//     return { status: "In Stock", color: "bg-green-100 text-green-800" };
-//   };
-
-//   const { user } = useMainContext();
-//   const canEdit = user && user.role === "admin" ? true : false;
-
-//   return (
-//     <div className="min-h-screen bg-gray-50">
-//       <Header currentPage="products" />
-//       {loading && <p>Loading</p>}
-
-//       <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-//         {/* Page Header */}
-//         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
-//           <div>
-//             <h1 className="text-3xl font-bold text-gray-900">Products</h1>
-//             <p className="mt-2 text-gray-600">
-//               Manage your product catalog and inventory levels
-//             </p>
-//           </div>
-//           {canEdit && (
-//             <Link
-//               to="/products/new"
-//               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 transition-all duration-200 transform hover:-translate-y-1 shadow-md hover:shadow-lg"
-//             >
-//               <FaPlus className="mr-2 h-4 w-4" />
-//               Add Product
-//             </Link>
-//           )}
-//         </div>
-
-//         {/* Results Summary */}
-//         <p className="text-sm text-gray-600 mb-2">
-//           Showing {products?.length} products
-//         </p>
-
-//         {/* Products Table */}
-//         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-//           <div className="overflow-x-auto">
-//             <table className="min-w-full divide-y divide-gray-200">
-//               <thead className="bg-gray-50">
-//                 <tr>
-//                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                     Product
-//                   </th>
-//                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                     SKU
-//                   </th>
-//                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                     Category
-//                   </th>
-//                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                     Price
-//                   </th>
-//                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                     Stock
-//                   </th>
-//                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                     Status
-//                   </th>
-//                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                     Actions
-//                   </th>
-//                 </tr>
-//               </thead>
-//               <tbody className="bg-white divide-y divide-gray-200">
-//                 {products?.map((product) => {
-//                   const stockStatus = getStockStatus(product);
-//                   return (
-//                     <tr key={product?._id} className="hover:bg-gray-50">
-//                       <td className="px-6 py-4 whitespace-nowrap">
-//                         <div className="text-sm font-medium text-gray-900">
-//                           {product.name}
-//                         </div>
-//                         <div className="text-sm text-gray-500 truncate max-w-xs">
-//                           {product.description}
-//                         </div>
-//                       </td>
-//                       <td className="px-6 py-4 text-sm text-gray-900 font-mono">
-//                         {product.sku}
-//                       </td>
-//                       <td className="px-6 py-4 text-sm text-gray-900">
-//                         {product.category}
-//                       </td>
-//                       <td className="px-6 py-4 text-sm text-gray-900 font-semibold">
-//                         ${product.price}
-//                       </td>
-//                       <td className="px-6 py-4 text-sm text-gray-900">
-//                         {product.quantity}
-//                         <div className="text-xs text-gray-500">
-//                           Min: {product.minStock}
-//                         </div>
-//                       </td>
-//                       <td className="px-6 py-4">
-//                         <span
-//                           className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${stockStatus.color}`}
-//                         >
-//                           {stockStatus.status}
-//                         </span>
-//                       </td>
-//                       <td className="px-6 py-4 text-sm font-medium">
-//                         <div className="flex space-x-2">
-//                           <Link
-//                             to={`/products/${product._id}`}
-//                             className="text-blue-600 hover:text-blue-900 p-1 hover:bg-blue-100 rounded"
-//                             title="View"
-//                           >
-//                             <FaEye />
-//                           </Link>
-//                           {canEdit && (
-//                             <>
-//                               <Link
-//                                 to={`/products/${product._id}?edit=true`}
-//                                 className="text-green-600 hover:text-green-900 p-1 hover:bg-green-100 rounded"
-//                                 title="Edit"
-//                               >
-//                                 <FaEdit />
-//                               </Link>
-//                               <button
-//                                 onClick={() => handleDeleteClick(product)}
-//                                 className="text-red-600 hover:text-red-900 p-1 hover:bg-red-100 rounded"
-//                                 title="Delete"
-//                               >
-//                                 <FaTrash />
-//                               </button>
-//                             </>
-//                           )}
-//                         </div>
-//                       </td>
-//                     </tr>
-//                   );
-//                 })}
-//               </tbody>
-//             </table>
-//           </div>
-
-//           {products?.length === 0 && (
-//             <div className="text-center py-12">
-//               <div className="text-gray-500 mb-4">
-//                 <FaSearch className="mx-auto h-12 w-12" />
-//               </div>
-//               <h3 className="text-lg font-medium text-gray-900 mb-2">
-//                 No products found
-//               </h3>
-//               <p className="text-gray-500 mb-4">
-//                 Try adding a new product to get started.
-//               </p>
-//               {canEdit && (
-//                 <Link
-//                   to="/products/new"
-//                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700"
-//                 >
-//                   <FaPlus className="mr-2 h-4 w-4" />
-//                   Add Your First Product
-//                 </Link>
-//               )}
-//             </div>
-//           )}
-//         </div>
-//         {productToDelete && (
-//           <DeleteConfirmModal
-//             product={productToDelete}
-//             isOpen={showDeleteConfirm}
-//             onClose={() => {
-//               setShowDeleteConfirm(false);
-//               setProductToDelete(null);
-//             }}
-//           />
-//         )}
-//       </main>
-//     </div>
-//   );
-// }
