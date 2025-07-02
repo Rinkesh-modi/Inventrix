@@ -30,7 +30,7 @@ export default function ProductsIndex() {
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [priceFilter, setPriceFilter] = useState<string>("all");
   const [showFilters, setShowFilters] = useState(false);
-  useAuthGuard();
+  // useAuthGuard();
   const navigate = useNavigate();
 
   const fetchAllProducts = async () => {

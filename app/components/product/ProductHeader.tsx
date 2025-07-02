@@ -49,7 +49,7 @@ export default function ProductHeader({
 }: ProductHeaderProps) {
   const canEdit = user && user.role === "admin" ? true : false;
   const stockStatus = getStockStatus(product);
-  useAuthGuard();
+  // useAuthGuard();
 
   return (
     <div className="mb-8">

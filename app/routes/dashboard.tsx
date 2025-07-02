@@ -20,7 +20,7 @@ const Dashboard = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const { user } = useMainContext();
 
-    useAuthGuard();
+    // useAuthGuard();
 
   // Fetch products data
   const fetchProducts = async () => {
